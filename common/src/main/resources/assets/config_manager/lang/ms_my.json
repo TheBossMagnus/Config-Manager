@@ -1,0 +1,12 @@
+{
+  "config_manager.title": "Urus konfigurasi pek mod",
+  "config_manager.close": "Tutup",
+  "config_manager.confirmation": "Adakah anda pasti?",
+  "config_manager.success": "Mulakan semula permainan",
+  "config_manager.error": "Sebuah ralat telah berlaku",
+  "config_manager.update_config": "Kemas kini konfigurasi pek mod",
+  "config_manager.reset_config": "Tetap semula konfigurasi pek mod",
+  "config_manager.warning.game_restart": "Anda perlu memulakan semula permainan anda",
+  "config_manager.warning.lose_some_config": "§eSesetengah tetapan anda akan digantikan dengan tetapan lalai pek mod ini.§l Sebahagian daripada konfigurasi semasa anda mungkin akan ditulis ganti§r\n",
+  "config_manager.warning.lose_all_config": "§c§lKesemua konfigurasi semasa anda akan dipadamkan dan digantikan sepenuhnya dengan tetapan lalai pek mod ini§r\n"
+}
