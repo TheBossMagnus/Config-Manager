@@ -12,12 +12,12 @@ It supports both **NeoForge** and **Fabric**, starting from **Minecraft 1.20.1**
 ## Features
 
 ### Ship modpack defaults without overriding user preferences
-- Place your modpack’s default configuration files in `/config/modpack_default`.
+- Place your modpack’s default configuration files in `/config/modpack_defaults`.
 - At startup, all files from that directory are copied into the Minecraft directory **only if they do not already exist**.
 
 **Examples:**
-- `.minecraft/config/modpack_default/options.txt` → copied to `.minecraft/options.txt`
-- `.minecraft/config/modpack_default/config/myMod.json` → copied to `.minecraft/config/myMod.json`
+- `.minecraft/config/modpack_defaults/options.txt` → copied to `.minecraft/options.txt`
+- `.minecraft/config/modpack_defaults/config/myMod.json` → copied to `.minecraft/config/myMod.json`
 
 This ensures that user settings are preserved across modpack updates.
 
