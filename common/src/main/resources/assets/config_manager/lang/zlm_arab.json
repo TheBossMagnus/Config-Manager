@@ -1,0 +1,12 @@
+{
+  "config_manager.title": "اوروس کونفيݢوراسي ڤيک مود",
+  "config_manager.close": "توتوڤ",
+  "config_manager.confirmation": "اداکه اندا ڤستي؟",
+  "config_manager.success": "مولاکن سمولا ڤرماٴينن",
+  "config_manager.error": "سبواه رالت تله برلاکو",
+  "config_manager.update_config": "کمس کيني کونفيݢوراسي ڤيک مود",
+  "config_manager.reset_config": "تتڤ سمولا کونفيݢوراسي ڤيک مود",
+  "config_manager.warning.game_restart": "اندا ڤرلو ممولاکن سمولا ڤرماٴينن اندا",
+  "config_manager.warning.lose_some_config": "§eسستڠه تتڤن اندا اکن دݢنتيکن دڠن تتڤن لالاي ڤيک مود اين.§l سبهاݢين درڤد کونفيݢوراسي سماس اندا موڠکين اکن دتوليس ݢنتي§r\n",
+  "config_manager.warning.lose_all_config": "§c§lکسموا کونفيݢوراسي سماس اندا اکن دڤادمکن دان دݢنتيکن سڤنوهڽ دڠن تتڤن لالاي ڤيک مود اين§r\n"
+}
