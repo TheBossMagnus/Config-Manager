@@ -3,17 +3,23 @@
  */
 package io.github.thebossmagnus.mods.config_manager.core_mod.services;
 
-import cpw.mods.jarhandling.SecureJar;
+import net.neoforged.fml.jarcontents.JarContents;
 import net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator;
 import net.neoforged.fml.loading.moddiscovery.readers.JarModsDotTomlModFileReader;
 import net.neoforged.neoforgespi.locating.IDependencyLocator;
 import net.neoforged.neoforgespi.locating.IDiscoveryPipeline;
 import net.neoforged.neoforgespi.locating.IModFile;
+import net.neoforged.neoforgespi.locating.ModFileInfoParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static io.github.thebossmagnus.mods.config_manager.common.Constants.MOD_ID;
@@ -28,17 +34,58 @@ public class ConfigManagerDependencyLocator extends JarInJarDependencyLocator im
     @Override
     public void scanMods(List<IModFile> loadedMods, IDiscoveryPipeline pipeline) {
         try {
-            Path jarPath = Path.of(ConfigManagerDependencyLocator.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            SecureJar secureJar = SecureJar.from(jarPath);
+            IModFile modFile;
+            try {
+                JarContents jarContents = JarContents.ofPath(Path.of(ConfigManagerDependencyLocator.class.getProtectionDomain().getCodeSource().getLocation().toURI()));
+                modFile = IModFile.create(jarContents, JarModsDotTomlModFileReader::manifestParser);
+            } catch (NoClassDefFoundError | NoSuchMethodError e) {
+                Path path = Path.of(ConfigManagerDependencyLocator.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 
-            IModFile modFile = IModFile.create(secureJar, JarModsDotTomlModFileReader::manifestParser);
+                Class<?> secureJarClass = Class.forName("net.neoforged.fml.classloading.SecureJar");
+                Method fromMethod = secureJarClass.getDeclaredMethod("from", Path[].class);
+                Object secureJar = fromMethod.invoke(null, (Object) new Path[]{path});
 
-            Path innerJarPath = Path.of("META-INF", "jarjar", "config_manager-neoforge.jar");
+                Class<?> readerClass = Class.forName("net.neoforged.fml.loading.moddiscovery.readers.JarModsDotTomlModFileReader");
+                Method manifestParserMethod = readerClass.getDeclaredMethod("manifestParser", IModFile.class);
 
-            Optional<IModFile> neoForgeMod = loadModFileFrom(modFile, innerJarPath, pipeline);
+                MethodHandles.Lookup lookup = MethodHandles.lookup();
+                MethodHandle manifestParserHandle = lookup.unreflect(manifestParserMethod);
+                ModFileInfoParser parser = (iModFile) -> {
+                    try {
+                        return (net.neoforged.neoforgespi.language.IModFileInfo) manifestParserHandle.invoke(iModFile);
+                    } catch (Throwable e1) {
+                        throw new RuntimeException("Failed to invoke manifestParser", e1);
+                    }
+                };
 
-            neoForgeMod.ifPresent(pipeline::addModFile);
+                Method createMethod = IModFile.class.getDeclaredMethod("create", secureJarClass, ModFileInfoParser.class);
+                modFile = (IModFile) createMethod.invoke(null, secureJar, parser);
+            }
 
+            // Use reflection to access the private loadModFileFrom method
+            Method loadModFileFromMethod = JarInJarDependencyLocator.class.getDeclaredMethod(
+                    "loadModFileFrom",
+                    IModFile.class,
+                    String.class,
+                    IDiscoveryPipeline.class,
+                    Map.class
+            );
+            loadModFileFromMethod.setAccessible(true);
+
+            // Create a raw HashMap since we can't access EmbeddedJarKey
+            @SuppressWarnings({"rawtypes"})
+            Map createdModFiles = new HashMap<>();
+
+            @SuppressWarnings("unchecked")
+            Optional<IModFile> neoForgeMod = (Optional<IModFile>) loadModFileFromMethod.invoke(
+                    this,
+                    modFile,
+                    "META-INF/jarjar/config_manager-neoforge.jar",
+                    pipeline,
+                    createdModFiles
+            );
+
+            pipeline.addModFile(neoForgeMod.get());
         } catch (Exception e) {
             LOGGER.error("Error while adding config_manager-neoforge.jar to pipeline: ", e);
         }
