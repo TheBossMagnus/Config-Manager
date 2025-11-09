@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 public final class OverwriteConfig {
 
 
-
     public static void run(Path gameDir) {
         Path configDir = gameDir.resolve("config");
         Path defaultsDir = configDir.resolve(Constants.DIR_NAME);
