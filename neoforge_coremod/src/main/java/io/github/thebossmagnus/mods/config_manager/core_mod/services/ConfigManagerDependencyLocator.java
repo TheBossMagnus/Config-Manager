@@ -63,27 +63,13 @@ public class ConfigManagerDependencyLocator extends JarInJarDependencyLocator im
             }
 
             // Use reflection to access the private loadModFileFrom method
-            Method loadModFileFromMethod = JarInJarDependencyLocator.class.getDeclaredMethod(
-                    "loadModFileFrom",
-                    IModFile.class,
-                    String.class,
-                    IDiscoveryPipeline.class,
-                    Map.class
-            );
+            Method loadModFileFromMethod = JarInJarDependencyLocator.class.getDeclaredMethod("loadModFileFrom", IModFile.class, String.class, IDiscoveryPipeline.class, Map.class);
             loadModFileFromMethod.setAccessible(true);
 
             // Create a raw HashMap since we can't access EmbeddedJarKey
-            @SuppressWarnings({"rawtypes"})
-            Map createdModFiles = new HashMap<>();
+            @SuppressWarnings({"rawtypes"}) Map createdModFiles = new HashMap<>();
 
-            @SuppressWarnings("unchecked")
-            Optional<IModFile> neoForgeMod = (Optional<IModFile>) loadModFileFromMethod.invoke(
-                    this,
-                    modFile,
-                    "META-INF/jarjar/config_manager-neoforge.jar",
-                    pipeline,
-                    createdModFiles
-            );
+            @SuppressWarnings("unchecked") Optional<IModFile> neoForgeMod = (Optional<IModFile>) loadModFileFromMethod.invoke(this, modFile, "META-INF/jarjar/config_manager-neoforge.jar", pipeline, createdModFiles);
 
             pipeline.addModFile(neoForgeMod.get());
         } catch (Exception e) {
