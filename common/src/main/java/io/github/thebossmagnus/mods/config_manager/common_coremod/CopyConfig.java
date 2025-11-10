@@ -30,7 +30,7 @@ public final class CopyConfig {
         int fullscreenSetting = ModrinthAppCompat.getFullScreenSetting(gameDir);
         if (fullscreenSetting != -1) {
             try {
-                Files.deleteIfExists(configDir.resolve("options.txt"));
+                Files.deleteIfExists(gameDir.resolve("options.txt"));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
