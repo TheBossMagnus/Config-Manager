@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 import static io.github.thebossmagnus.mods.config_manager.common.Constants.LOGGER;
 
@@ -51,6 +52,9 @@ public final class ModrinthAppCompat {
             boolean replaced = false;
             for (int i = 0; i < lines.size(); i++) {
                 if (lines.get(i).startsWith("fullscreen:")) {
+                    if (!lines.get(i).equals(fullscreenSetting)) {
+                        LOGGER.warn("Overriding modpack fullscreen preference ({}) with launcher preference ({})", lines.get(i), fullscreenSetting);
+                    }
                     lines.set(i, fullscreenSetting);
                     replaced = true;
                     break;
@@ -59,11 +63,9 @@ public final class ModrinthAppCompat {
             if (!replaced) {
                 lines.add(fullscreenSetting);
             }
-            Path tmp = Files.createTempFile(gameDir, "options", ".tmp");
-            Files.write(tmp, lines);
-            java.nio.file.Files.move(tmp, optionsFile, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            Files.write(optionsFile, lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (Exception e) {
-            throw new RuntimeException("Could not reapply fullscreen preference chosen by the launcher", e);
+            LOGGER.error("Could not reapply fullscreen preference chosen by the launcher", e);
         }
     }
 }
