@@ -15,7 +15,7 @@ Fixing this requires a slightly hacky workaround.
 The launcher option will override the pack preference (only for the full screen obv)
 To do that we first check if the file, that only "fullscreen:..."  exits or not (-1), than we save the status of fullscreen (0 or 1),
 delete the file, copy and later reapply it after the copy
- */
+*/
 public final class ModrinthAppCompat {
 
 
@@ -25,10 +25,10 @@ public final class ModrinthAppCompat {
         if (Files.exists(gameDir.resolve("options.txt"))) {
             try {
                 String content = Files.readString(gameDir.resolve("options.txt"));
-                if (content.equals("fullscreen:true")) {
+                if (content.equals("\nfullscreen:true") || content.equals("fullscreen:true")) {
                     LOGGER.info("Detected fullscreen preference imposed by the launcher: true, Merging it with modpack preference");
                     return 1;
-                } else if (content.equals("fullscreen:false")) {
+                } else if (content.equals("\nfullscreen:false") || content.equals("fullscreen:false")) {
                     LOGGER.info("Detected fullscreen preference imposed by the launcher: false, Merging it with modpack preference");
                     return 0;
                 }
