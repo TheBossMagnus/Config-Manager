@@ -1,1 +1,2 @@
-Mark this as the 1.20.4 build
+* Added compatibility with Modrinth App fullscreen settings
+* Added German ([GulutGames](https://github.com/TheBossMagnus/Config-Manager/pull/3)) and Malay/Malay Jawi ([NuruddinPlays](https://github.com/TheBossMagnus/Config-Manager/pull/2)) translations
