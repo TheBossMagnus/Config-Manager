@@ -1,0 +1,12 @@
+{
+  "config_manager.title": "Halda modipaki seadistusi",
+  "config_manager.close": "Sulge",
+  "config_manager.confirmation": "Kas oled kindel?",
+  "config_manager.success": "Taaskäivita oma mäng",
+  "config_manager.error": "Esines viga",
+  "config_manager.update_config": "Uuenda modipaki seadistusi",
+  "config_manager.reset_config": "Lähtesta modipaki seadistused",
+  "config_manager.warning.game_restart": "Sa pead mängu taaskäivitama",
+  "config_manager.warning.lose_some_config": "§eMõned sinu seadistused asendatakse modipaki vaikeväärtustega.§l Sinu praegused seadistused võidakse osaliselt üle kirjutada§r\n",
+  "config_manager.warning.lose_all_config": "§c§lKõik sinu praegused seadistused kustutatakse ja asendatakse täielikult modipaki vaikeväärtustega§r\n"
+}
