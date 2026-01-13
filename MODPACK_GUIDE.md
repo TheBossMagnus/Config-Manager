@@ -6,7 +6,7 @@ Setup is straightforward:
 3. The structure inside `modpack_default` should mirror the root of the Minecraft directory.
 
 **Example:**
-
+```
 .minecraft/
 ├─ options.txt (the "real" one)
 ├─ config/
@@ -15,7 +15,7 @@ Setup is straightforward:
 │ │ ├─ options.txt (the modpack one)
 │ │ └─ config/
 │ │ └─ myMod.json (the "real" one)
-
+```
 This is an [example implementation](https://github.com/TheBossMagnus/Thunder) (my modpack).
 
 ---
