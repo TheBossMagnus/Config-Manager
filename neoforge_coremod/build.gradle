@@ -16,7 +16,7 @@ configurations {
 }
 
 base {
-    archivesName = "ConfigManager-neoforge-1.21.x"
+    archivesName = "ConfigManager-neoforge-1.21.8-1.21.11"
 }
 
 dependencies {
@@ -80,7 +80,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 unifiedPublishing {
     project {
-        gameVersions = ["1.21.9","1.21.10"]
+        gameVersions = ["1.21.9","1.21.10", "1.21.11"]
         gameLoaders = ["neoforge"]
 
 
