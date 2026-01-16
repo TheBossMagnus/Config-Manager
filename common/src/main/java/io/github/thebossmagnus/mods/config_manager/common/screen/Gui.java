@@ -15,6 +15,7 @@ public class Gui extends Screen {
     private static final int buttonHeight = 20;
     private static final int COLOR_RED = 0xFF0000;
     private static final int COLOR_WHITE = 0xFFFFFF;
+    private final Screen parent;
     private final Component updateWarnings = Component.translatable("* %s\n* %s",
             Component.translatable("config_manager.warning.lose_some_config"),
             Component.translatable("config_manager.warning.game_restart")
@@ -30,6 +31,7 @@ public class Gui extends Screen {
     @SuppressWarnings("unused")
     public Gui(Screen screen) {
         super(Component.translatable("config_manager.title"));
+        parent = screen;
     }
 
     private Button createConfigButton(Component label, Runnable flagSetter) {
@@ -108,8 +110,7 @@ public class Gui extends Screen {
 
     @Override
     public void onClose() {
-        assert this.minecraft != null;
-        this.minecraft.setScreen(null);
+        this.minecraft.setScreen(parent);
     }
 
 }
