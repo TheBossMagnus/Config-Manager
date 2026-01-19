@@ -16,11 +16,13 @@ public class Gui extends Screen {
     private static final int COLOR_RED = 0xFF0000;
     private static final int COLOR_WHITE = 0xFFFFFF;
     private final Screen parent;
-    private final Component updateWarnings = Component.translatable("* %s\n* %s",
+    private final Component updateWarnings = Component.translatable("* %s\n" +
+                    "* %s",
             Component.translatable("config_manager.warning.lose_some_config"),
             Component.translatable("config_manager.warning.game_restart")
     );
-    private final Component resetWarnings = Component.translatable("* %s\n* %s",
+    private final Component resetWarnings = Component.translatable("* %s\n" +
+                    "* %s",
             Component.translatable("config_manager.warning.lose_all_config"),
             Component.translatable("config_manager.warning.game_restart")
     );
@@ -35,7 +37,6 @@ public class Gui extends Screen {
     }
 
     private Button createConfigButton(Component label, Runnable flagSetter) {
-        // Use a local mutable state for each button
         final boolean[] isFirstClick = {true};
         return Button.builder(label, (btn) -> {
                     if (isFirstClick[0]) {
@@ -43,15 +44,14 @@ public class Gui extends Screen {
                         isFirstClick[0] = false;
                     } else {
                         try {
-                            btn.active = false;
                             flagSetter.run();
+                            Constants.LOGGER.info("Flag Added, it will be processed on the next game boot");
                             btn.setMessage(Component.translatable("config_manager.success").withStyle(style -> style.withColor(COLOR_WHITE)));
-                            Constants.LOGGER.info("Flag Added");
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
                             Constants.LOGGER.error("Failed to add flag", e);
                             btn.setMessage(Component.translatable("config_manager.error").withStyle(style -> style.withColor(COLOR_RED)));
-                            btn.active = false;
                         }
+                        btn.active = false;
                     }
                 })
                 .size(buttonWidth, buttonHeight)
