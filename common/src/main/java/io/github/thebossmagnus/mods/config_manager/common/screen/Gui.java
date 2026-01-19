@@ -80,12 +80,17 @@ public class Gui extends Screen {
         this.addRenderableWidget(updateButton);
         this.addRenderableWidget(closeButton);
 
+        // Calculate label positioning (leave 15px gap on top of buttons and 5% on the window border, then use remaining space above )
+        int buttonY = (int) ((this.height - buttonHeight) * 0.6);
+        int availableHeight = (int) (buttonY - 15 - this.height*0.05); // Available height from top to text end position
+
         updateWarningsLabel = new MultilineLabelWidget(
                 this.font,
                 updateWarnings,
                 (int) ((this.width - buttonWidth) * 0.15),
-                (int) ((this.height - buttonHeight) * 0.6) - 90,
+                (int) (this.height*0.05),
                 buttonWidth,
+                availableHeight,
                 true
         );
 
@@ -93,8 +98,9 @@ public class Gui extends Screen {
                 this.font,
                 resetWarnings,
                 (int) ((this.width - buttonWidth) * 0.85),
-                (int) ((this.height - buttonHeight) * 0.6) - 90,
+                (int) (this.height*0.05),
                 buttonWidth,
+                availableHeight,
                 true
         );
     }
