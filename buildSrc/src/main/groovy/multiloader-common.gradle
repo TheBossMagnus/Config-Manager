@@ -46,6 +46,11 @@ repositories {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
     }
+    maven {
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
+    }
+
 }
 
 // Declare capabilities on the outgoing configurations.
@@ -88,26 +93,26 @@ jar {
 
 processResources {
     var expandProps = [
-            'version'                       : version,
+            'version'                         : version,
 
-            'group'                         : project.group, //Else we target the task's group.
-            'release_type'                  :release_type,
-            'minecraft_version'             : minecraft_version,
-            'minecraft_version_range_fabric': minecraft_version_range_fabric,
-            'fabric_loader_version'         : fabric_loader_version,
-            'mod_name'                      : mod_name,
-            'mod_author'                    : mod_author,
-            'mod_id'                        : mod_id,
-            'license'                       : license,
-            'description'                   : project.description,
-            'neoforge_version'              : neoforge_version,
-            'neoforge_loader_version_range' : neoforge_loader_version_range,
-            'credits'                       : credits,
-            'java_version'                  : java_version,
-            'mod_url'                       : mod_url,
-            'mod_sources'                   :mod_sources,
-            'mod_issue_tracker'             :mod_issue_tracker,
-            'minecraft_version_range_neoforge':minecraft_version_range_neoforge
+            'group'                           : project.group, //Else we target the task's group.
+            'release_type'                    : release_type,
+            'minecraft_version'               : minecraft_version,
+            'minecraft_version_range_fabric'  : minecraft_version_range_fabric,
+            'fabric_loader_version'           : fabric_loader_version,
+            'mod_name'                        : mod_name,
+            'mod_author'                      : mod_author,
+            'mod_id'                          : mod_id,
+            'license'                         : license,
+            'description'                     : project.description,
+            'neoforge_version'                : neoforge_version,
+            'neoforge_loader_version_range'   : neoforge_loader_version_range,
+            'credits'                         : credits,
+            'java_version'                    : java_version,
+            'mod_url'                         : mod_url,
+            'mod_sources'                     : mod_sources,
+            'mod_issue_tracker'               : mod_issue_tracker,
+            'minecraft_version_range_neoforge': minecraft_version_range_neoforge
     ]
 
     var jsonExpandProps = expandProps.collectEntries {
