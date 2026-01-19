@@ -72,9 +72,7 @@ public class Gui extends Screen {
         );
         resetButton.setPosition((int) ((this.width - buttonWidth) * 0.85), (int) ((this.height - buttonHeight) * 0.6));
 
-        Button closeButton = Button.builder(Component.translatable("config_manager.close"), (btn) -> {
-            this.onClose();
-        }).pos((int) ((this.width - buttonWidth) * 0.5), (int) ((this.height - buttonHeight) * 0.95)).size(buttonWidth, buttonHeight).build();
+        Button closeButton = Button.builder(Component.translatable("config_manager.close"), (btn) -> this.onClose()).pos((int) ((this.width - buttonWidth) * 0.5), (int) ((this.height - buttonHeight) * 0.95)).size(buttonWidth, buttonHeight).build();
 
         this.addRenderableWidget(resetButton);
         this.addRenderableWidget(updateButton);
@@ -82,13 +80,13 @@ public class Gui extends Screen {
 
         // Calculate label positioning (leave 15px gap on top of buttons and 5% on the window border, then use remaining space above )
         int buttonY = (int) ((this.height - buttonHeight) * 0.6);
-        int availableHeight = (int) (buttonY - 15 - this.height*0.05); // Available height from top to text end position
+        int availableHeight = (int) (buttonY - 15 - this.height * 0.05); // Available height from top to text end position
 
         updateWarningsLabel = new MultilineLabelWidget(
                 this.font,
                 updateWarnings,
                 (int) ((this.width - buttonWidth) * 0.15),
-                (int) (this.height*0.05),
+                (int) (this.height * 0.05),
                 buttonWidth,
                 availableHeight,
                 true
@@ -98,7 +96,7 @@ public class Gui extends Screen {
                 this.font,
                 resetWarnings,
                 (int) ((this.width - buttonWidth) * 0.85),
-                (int) (this.height*0.05),
+                (int) (this.height * 0.05),
                 buttonWidth,
                 availableHeight,
                 true
