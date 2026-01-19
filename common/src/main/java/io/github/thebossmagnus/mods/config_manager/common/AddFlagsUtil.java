@@ -10,20 +10,26 @@ public class AddFlagsUtil {
     private static final AtomicBoolean OVERWRITE_FLAG = new AtomicBoolean(false);
 
 
-    public static void setUpdateFlag(boolean updateFlag) {
+    public static void setUpdateFlag(boolean updateFlag) throws RuntimeException {
         UPDATE_FLAG.set(updateFlag);
         addFlags();
     }
 
 
-    public static void setOverwriteFlag(boolean overwriteFlag) {
+    public static void setOverwriteFlag(boolean overwriteFlag) throws RuntimeException {
         OVERWRITE_FLAG.set(overwriteFlag);
         addFlags();
     }
 
     private static void addFlags() throws RuntimeException {
-        Path gameDir = Services.PLATFORM.getGameDir();
-        Path configDir = gameDir.resolve("config");
+        Path configDir;
+        try {
+            Path gameDir = Services.PLATFORM.getGameDir();
+            configDir = gameDir.resolve("config");
+        } catch (Exception e) {
+            Constants.LOGGER.error("Error while resolving path", e);
+            throw new RuntimeException("Error while resolving path: " + e.getMessage(), e);
+        }
         try {
             if (!Files.exists(configDir)) {
                 Files.createDirectories(configDir);
