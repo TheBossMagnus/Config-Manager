@@ -1,0 +1,12 @@
+{
+  "config_manager.title": "Керування налаштуваннями збірок",
+  "config_manager.close": "Закрити",
+  "config_manager.confirmation": "Ви впевнені?",
+  "config_manager.success": "Перезапустіть гру",
+  "config_manager.error": "Сталася помилка",
+  "config_manager.update_config": "Оновити налаштування збірки",
+  "config_manager.reset_config": "Скинути налаштування збірки",
+  "config_manager.warning.game_restart": "Вам потрібно буде перезапустити гру",
+  "config_manager.warning.lose_some_config": "§eДеякі ваші налаштування будуть замінені усталеними налаштуваннями збірки.§l Ваші поточні налаштування можуть бути частково перезаписані§r\n",
+  "config_manager.warning.lose_all_config": "§c§lУсі ваші поточні налаштування будуть видалені та повністю замінені усталеними налаштуваннями збірки§r\n"
+}
