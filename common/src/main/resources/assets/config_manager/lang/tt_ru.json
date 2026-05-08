@@ -1,0 +1,14 @@
+{
+  "modmenu.summaryTranslation.config_manager": "Мод җыелмасын ясаучыларга кулланучыга иң мөмкин дус рәвешендә бирә.",
+  "modmenu.descriptionTranslation.config_manager": "Мод җыелмасын ясаучыларга кулланучыга иң мөмкин дус рәвешендә бирергә рөхсәт бирә торган Minecraft моды.",
+  "config_manager.title": "Мод җыелмасы көйләүләрен идарә итү",
+  "config_manager.close": "Ябу",
+  "config_manager.confirmation": "Чыннан да телисезме?",
+  "config_manager.success": "Уеныгызны яңадан башлагыз",
+  "config_manager.error": "Хата булды",
+  "config_manager.update_config": "Мод җыелмасы көйләүләрен яңарту",
+  "config_manager.reset_config": "Мод җыелмасы көйләүләрен ташлату",
+  "config_manager.warning.game_restart": "Сезгә уеныгызны яңадан башларга кирәк булачак",
+  "config_manager.warning.lose_some_config": "§eКайбер көйләүләрегез мод җыелмасының гадәти көйләүләренә тулысынча үзгәртелә.§l Хәзерге көйләүләрегез өлешчә күчерелә ала§r\n",
+  "config_manager.warning.lose_all_config": "§c§lБарлык көйләүләрегез бетереләчәк һәм мод җыелмасының гадәти көйләүләренә тулысынча үзгәртелә§r\n"
+}
