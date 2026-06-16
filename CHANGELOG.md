@@ -1,1 +1,2 @@
-* Ported to 26.1
+* Ported to 26.2
+* Added Ukrainian and Tartar translations

@@ -72,13 +72,12 @@ public class Gui extends Screen {
         );
         resetButton.setPosition((int) ((this.width - buttonWidth) * 0.85), (int) ((this.height - buttonHeight) * 0.6));
 
-        Button closeButton = Button.builder(Component.translatable("config_manager.close"), (btn) -> this.onClose()).pos((int) ((this.width - buttonWidth) * 0.5), (int) ((this.height - buttonHeight) * 0.95)).size(buttonWidth, buttonHeight).build();
+        Button closeButton = Button.builder(Component.translatable("config_manager.close"), (_) -> this.onClose()).pos((int) ((this.width - buttonWidth) * 0.5), (int) ((this.height - buttonHeight) * 0.95)).size(buttonWidth, buttonHeight).build();
 
         this.addRenderableWidget(resetButton);
         this.addRenderableWidget(updateButton);
         this.addRenderableWidget(closeButton);
 
-        // Calculate label positioning (leave 15px gap on top of buttons and 5% on the window border, then use remaining space above )
         int buttonY = (int) ((this.height - buttonHeight) * 0.6);
         int availableHeight = (int) (buttonY - 15 - this.height * 0.05); // Available height from top to text end position
 
@@ -110,10 +109,19 @@ public class Gui extends Screen {
         resetWarningsLabel.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, partialTick);
     }
 
-
     @Override
     public void onClose() {
-        this.minecraft.setScreen(parent);
+        try {
+            // Minecraft 26.1
+            this.minecraft.getClass().getMethod("setScreen", Screen.class).invoke(this.minecraft, parent);
+        } catch (Exception e) {
+            try {
+                // Minecraft 26.2, moved to a subpackage
+                Object gui = this.minecraft.getClass().getField("gui").get(this.minecraft);
+                gui.getClass().getMethod("setScreen", Screen.class).invoke(gui, parent);
+            } catch (Exception ex) {
+                throw new RuntimeException("Failed to set gui", ex);
+            }
+        }
     }
-
 }

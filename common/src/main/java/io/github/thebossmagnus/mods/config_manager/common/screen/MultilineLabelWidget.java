@@ -47,9 +47,9 @@ public class MultilineLabelWidget implements Renderable {
      * Renders the multi-line label with automatic word wrapping
      *
      * @param guiGraphicsExtractor The graphics context
-     * @param mouseX      Mouse X position
-     * @param mouseY      Mouse Y position
-     * @param partialTick Partial tick
+     * @param mouseX               Mouse X position
+     * @param mouseY               Mouse Y position
+     * @param partialTick          Partial tick
      */
     @Override
     public void extractRenderState(@NonNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {

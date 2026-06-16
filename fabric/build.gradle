@@ -6,7 +6,7 @@ plugins {
 }
 
 base {
-    archivesName = "ConfigManager-${project.name}-26.1"
+    archivesName = "ConfigManager-${project.name}-26.1_26.2"
 }
 
 configurations {
@@ -59,7 +59,7 @@ loom {
 
 unifiedPublishing {
     project {
-        gameVersions = ["26.1"]
+        gameVersions = ["26.1", "26.1.1", "26.1.2", "26.2"]
         gameLoaders = ["fabric", "quilt"]
 
         displayName = "Config Manager ${project.version} Fabric"
