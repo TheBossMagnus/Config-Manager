@@ -34,6 +34,13 @@
   },
   "suggests": {
     "modmenu": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/configmanager",
+        "modmenu.modrinth": "${mod_url}"
+      }
+    }
   }
 }
-  

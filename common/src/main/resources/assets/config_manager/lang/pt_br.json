@@ -1,0 +1,12 @@
+{
+  "config_manager.title": "Gerenciar configuração do modpack",
+  "config_manager.close": "Fechar",
+  "config_manager.confirmation": "Você tem certeza?",
+  "config_manager.success": "Reinicie seu jogo",
+  "config_manager.error": "Ocorreu um erro",
+  "config_manager.update_config": "Atualizar configurações do modpack",
+  "config_manager.reset_config": "Redefinir configurações do modpack",
+  "config_manager.warning.game_restart": "Você deve reiniciar o jogo",
+  "config_manager.warning.lose_some_config": "§eAlgumas das suas configurações atuais serão substituídas pelas configurações do modpack.§l Essas configurações podem ser parcialmente substituídas§r\n",
+  "config_manager.warning.lose_all_config": "§c§lTodas as suas configurações atuais serão excluídas e substituídas totalmente pelas configurações do modpack§r\n"
+}
