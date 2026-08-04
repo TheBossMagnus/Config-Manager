@@ -3,8 +3,8 @@
 Setup is straightforward:
 
 1. Add Config Manager to your modpack (from [Modrinth] or [CurseForge]).
-2. Copy all configuration files into a folder called `modpack_default` inside `config/`.
-3. The structure inside `modpack_default` should mirror the root of the Minecraft directory.
+2. Copy all configuration files into a folder called `modpack_defaults` inside `config/`.
+3. The structure inside `modpack_defaults` should mirror the root of the Minecraft directory.
 
 **Example:**
 ```
