@@ -47,7 +47,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
     modrinth {
         group = "upload"
         token = System.getenv("MODRINTH_TOKEN")
-        projectId = "ehPxCT2J"
+        projectId = "jlNms3Jp"
         versionNumber = project.version
         versionName = tasks.jar.archiveFile.get().asFile.name
         versionType = release_type
@@ -55,6 +55,9 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         uploadFile = tasks.jar
         gameVersions = ["26.1.2", "26.2", "26.3"]
         loaders = ["fabric", "quilt"]
+        dependencies {
+            required.project "modmenu"
+        }
     }
 }
 
@@ -63,7 +66,7 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
         group = "upload"
         apiToken = System.getenv("CURSEFORGE_TOKEN")
 
-        def mainFile = upload("963806", tasks.jar)
+        def mainFile = upload("1340480", tasks.jar)
         mainFile.displayName = tasks.jar.archiveFile.get().asFile.name
         mainFile.changelog = parsedChangelog
         mainFile.changelogType = "markdown"
@@ -72,6 +75,7 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
         mainFile.addGameVersion("26.1.2", "26.2", "26.3")
         mainFile.addEnvironment("Client")
         mainFile.addModLoader("Fabric", "Quilt")
+        mainFile.addOptional("modmenu")
     }
 }
 
