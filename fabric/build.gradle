@@ -1,6 +1,7 @@
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
 apply plugin: 'net.fabricmc.fabric-loom'
+apply plugin: 'com.modrinth.minotaur'
 
 dependencies {
     implementation project(':common')

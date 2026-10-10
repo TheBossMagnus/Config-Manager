@@ -1,6 +1,7 @@
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
 apply plugin: 'net.neoforged.moddev'
+apply plugin: 'com.modrinth.minotaur'
 
 base {
     archivesName = "ConfigManager-neoforge-${project.minecraft_version}"
