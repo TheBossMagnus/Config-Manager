@@ -1,40 +1,87 @@
 plugins {
     id 'base'
     // see https://fabricmc.net/develop/ for new versions
-    id "net.fabricmc.fabric-loom" version '1.17-SNAPSHOT' apply false
+    id "net.fabricmc.fabric-loom" version '1.18-SNAPSHOT' apply false
     // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
-    id 'net.neoforged.moddev' version '2.0.141' apply false
+    id 'net.neoforged.moddev' version '2.0.148' apply false
+    id "com.modrinth.minotaur" version "2.+" apply false
+    id "net.darkhax.curseforgegradle" version "1.1.+" apply false
 }
 
-apply plugin: 'idea'
-idea {
-    module {
-        downloadSources = true
+allprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        maven {
+            name = 'Terraformers'
+            url = 'https://maven.terraformersmc.com/'
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.release = project.java_version.toInteger()
+    }
+
+    java {
+        toolchain.languageVersion = JavaLanguageVersion.of(project.java_version.toInteger())
+    }
+
+    idea {
+        module {
+            downloadSources = true
+            downloadJavadoc = true
+        }
     }
 }
 
+jar.enabled = false
 
 tasks.register('collectJars', Copy) {
-    def fabricJars = file("fabric/build/libs")
-    if (fabricJars.exists()) {
-        from(fabricJars) {
-            include '*.jar'
-            exclude '*-sources.jar', '*-javadoc.jar', '*-dev-shadow.jar'
-        }
+    dependsOn(
+            ':fabric:build',
+            ':neoforge_coremod:build',
+    )
+
+    from('fabric/build/libs') {
+        include '*.jar'
+        exclude '*-sources.jar', '*-javadoc.jar', '*-dev-shadow.jar'
+    }
+    from('neoforge_coremod/build/libs') {
+        include '*.jar'
+        exclude '*-sources.jar', '*-javadoc.jar', '*-dev-shadow.jar'
     }
 
-    def neoJars = file("neoforge_coremod/build/libs")
-    if (neoJars.exists()) {
-        from(neoJars) {
-            include '*.jar'
-            exclude '*-sources.jar', '*-javadoc.jar', '*-dev-shadow.jar'
-            rename { originalName ->
-                originalName.replace("_coremod", "")
-            }
-        }
-    }
-
-    into("$rootDir/build/libs")
+    into layout.buildDirectory.dir('libs')
 }
 
-build.finalizedBy(collectJars)
+tasks.named('build') {
+    finalizedBy tasks.named('collectJars')
+}
+
+tasks.register('publishUnified') {
+    group = "upload"
+    dependsOn(
+            ':fabric:publishUnified',
+            ':neoforge_coremod:publishUnified',
+    )
+}
+
+tasks.register('publishUnifiedToLocal') {
+    group = "upload"
+    dependsOn(
+            ':fabric:publishUnifiedToLocal',
+            ':neoforge_coremod:publishUnifiedToLocal',
+    )
+}
+
+tasks.register('publishRelease') {
+    group = 'upload'
+    dependsOn tasks.named('publishUnified')
+}

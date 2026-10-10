@@ -1,47 +1,47 @@
-/**
- * Adapted from https://github.com/KostromDan/Crash-Assistant, LGPL-3.0
- */
-plugins {
-    id 'multiloader-loader'
-    id 'net.neoforged.moddev'
-}
-
-jar {
-    exclude("io/github/thebossmagnus/mods/config_manager/common_coremod/**")
+apply plugin: 'net.neoforged.moddev'
+base {
+    archivesName = "ConfigManager-${project.name}-${project.minecraft_version}"
 }
 
 neoForge {
-    version = neoforge_version
-    // Automatically enable neoforge AccessTransformers if the file exists
-    def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
-    if (at.exists()) {
-        accessTransformers.from(at.absolutePath)
-    }
+    version = project.neoforge_version
 
-    runs {
-        configureEach {
-            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
-            ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
-        }
-        client {
-            client()
-        }
-        data {
-            clientData()
-        }
-        server {
-            server()
-        }
-    }
     mods {
         "${mod_id}" {
-            sourceSet sourceSets.main
+            sourceSet(sourceSets.main)
         }
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-sourceSets.main.java {
-    exclude 'io/github/thebossmagnus/mods/config_manager_coremod/**'
-    exclude 'io/github/thebossmagnus/mods/config_manager/common_coremod/**'
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+dependencies {
+    // Common project source files for compilation
+    compileOnly project(':common')
+}
+
+processResources {
+    var replaceProperties = [
+            mod_id                          : project.mod_id,
+            mod_name                        : project.mod_name,
+            description                     : project.description,
+            mod_author                      : project.mod_author,
+            version                         : project.version,
+            license                         : project.license,
+            mod_url                         : project.mod_url,
+            mod_issue_tracker               : project.mod_issue_tracker,
+            neoforge_loader_version_range   : project.neoforge_loader_version_range,
+            minecraft_version_range_neoforge: project.minecraft_version_range_neoforge,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand replaceProperties
+    }
+}
+
+jar {
+    from project(':common').sourceSets.main.output
 }

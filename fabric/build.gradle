@@ -1,98 +1,88 @@
-plugins {
-    id 'multiloader-loader'
-    id 'net.fabricmc.fabric-loom'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id "me.shedaniel.unified-publishing" version "0.1.+"
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+apply plugin: 'net.fabricmc.fabric-loom'
+
+dependencies {
+    implementation project(':common')
+
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+    compileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 
 base {
-    archivesName = "ConfigManager-${project.name}-26.1_26.2"
+    archivesName = "ConfigManager-${project.name}-${project.minecraft_version}"
 }
 
-configurations {
-    shadowBundle {
-        canBeResolved = true
-        canBeConsumed = false
+processResources {
+    def expandProps = [
+            "version"                       : project.version,
+            "mod_id"                        : project.mod_id,
+            "mod_name"                      : project.mod_name,
+            "description"                   : project.description,
+            "mod_author"                    : project.mod_author,
+            "license"                       : project.license,
+            "mod_url"                       : project.mod_url,
+            "mod_sources"                   : project.mod_sources,
+            "mod_issue_tracker"             : project.mod_issue_tracker,
+            "loader_version"                : project.fabric_loader_version,
+            "minecraft_version"             : project.minecraft_version,
+            "minecraft_version_range_fabric": project.minecraft_version_range_fabric,
+    ]
+    inputs.properties expandProps
+
+    filesMatching("fabric.mod.json") {
+        expand expandProps
     }
-}
-
-dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-
-    shadowBundle 'com.electronwill.night-config:toml:3.6.4'
-    shadowBundle 'com.electronwill.night-config:json:3.6.4'
-    implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-    runtimeOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
-}
-
-shadowJar {
-    configurations = [project.configurations.shadowBundle]
-    archiveClassifier.set('dev-shadow')
-    relocate 'com.electronwill.nightconfig', 'io.github.thebossmagnus.mods.config_manager.nightconfig'
 }
 
 jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from project(':common').sourceSets.main.output
 }
 
-loom {
-    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
-    if (aw.exists()) {
-        accessWidenerPath.set(aw)
-    }
-    runs {
-        client {
-            client()
-            setConfigName('Fabric Client')
-            ideConfigGenerated(true)
-            runDir('runs/client')
-        }
-        server {
-            server()
-            setConfigName('Fabric Server')
-            ideConfigGenerated(true)
-            runDir('runs/server')
-        }
+def parsedChangelog = rootProject.file('CHANGELOG.md').getText('UTF-8')
+
+if (System.getenv("MODRINTH_TOKEN") != null) {
+    modrinth {
+        group = "upload"
+        token = System.getenv("MODRINTH_TOKEN")
+        projectId = "ehPxCT2J"
+        versionNumber = project.version
+        versionName = tasks.jar.archiveFile.get().asFile.name
+        versionType = release_type
+        changelog = parsedChangelog
+        uploadFile = tasks.jar
+        gameVersions = ["26.1.2", "26.2", "26.3"]
+        loaders = ["fabric", "quilt"]
     }
 }
 
-unifiedPublishing {
-    project {
-        gameVersions = ["26.1", "26.1.1", "26.1.2", "26.2"]
-        gameLoaders = ["fabric", "quilt"]
+if (System.getenv("CURSEFORGE_TOKEN") != null) {
+    tasks.register("publishCurseForge", TaskPublishCurseForge) {
+        group = "upload"
+        apiToken = System.getenv("CURSEFORGE_TOKEN")
 
-        displayName = "Config Manager ${project.version} Fabric"
-        version = project.version
-        changelog = file('../CHANGELOG.md').text
-        releaseType = release_type
-        relations {
-            optional {
-                curseforge = "modmenu"
-                modrinth = "modmenu"
-            }
-        }
+        def mainFile = upload("963806", tasks.jar)
+        mainFile.displayName = tasks.jar.archiveFile.get().asFile.name
+        mainFile.changelog = parsedChangelog
+        mainFile.changelogType = "markdown"
+        mainFile.releaseType = release_type
 
-        mainPublication tasks.jar
-
-        var cfToken = System.getenv("CURSEFORGE_TOKEN")
-        if (cfToken != null) {
-            curseforge {
-                token = cfToken
-                id = "1340480"
-            }
-        }
-
-        var mrToken = System.getenv("MODRINTH_TOKEN")
-        if (mrToken != null) {
-            modrinth {
-                token = mrToken
-                id = "jlNms3Jp"
-            }
-        }
+        mainFile.addGameVersion("26.1.2", "26.2", "26.3")
+        mainFile.addEnvironment("Client")
+        mainFile.addModLoader("Fabric", "Quilt")
     }
 }
 
-tasks.register('publishRelease') {
-    dependsOn 'publishUnified'
+tasks.register('publishUnified') {
+    group = "upload"
+    if (System.getenv("MODRINTH_TOKEN") != null) dependsOn(tasks.modrinth)
+    if (System.getenv("CURSEFORGE_TOKEN") != null) dependsOn(tasks.publishCurseForge)
+}
+
+tasks.register('publishUnifiedToLocal', Copy) {
+    group = "upload"
+    dependsOn(tasks.jar)
+    from(tasks.jar.archiveFile)
+    into("build/unified-local/project0")
 }

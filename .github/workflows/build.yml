@@ -28,4 +28,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: NeoForge-git
-          path: /build/libs/ConfigManager-neoforge*
+          path: build/libs/ConfigManager-neoforge*

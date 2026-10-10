@@ -1,38 +1,30 @@
-/**
- * Adapted from https://github.com/KostromDan/Crash-Assistant, LGPL-3.0
- */
-plugins {
-    id 'multiloader-loader'
-    id 'net.neoforged.moddev'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id "me.shedaniel.unified-publishing" version "0.1.+"
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+apply plugin: 'net.neoforged.moddev'
+
+base {
+    archivesName = "ConfigManager-neoforge-${project.minecraft_version}"
 }
 
-configurations {
-    shadowBundle {
-        canBeResolved = true
-        canBeConsumed = false
+neoForge {
+    version = project.neoforge_version
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
     }
 }
 
-base {
-    archivesName = "ConfigManager-neoforge-26.1_26.2"
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
 }
 
 dependencies {
-    shadowBundle 'com.electronwill.night-config:toml:3.6.4'
-    shadowBundle 'com.electronwill.night-config:json:3.6.4'
-}
-
-shadowJar {
-    configurations = [project.configurations.shadowBundle]
-    archiveClassifier.set('dev-shadow')
-    relocate 'com.electronwill.nightconfig', 'io.github.thebossmagnus.mods.config_manager.nightconfig'
+    compileOnly project(':common')
 }
 
 jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    dependsOn(':neoforge:build')
     from(project(':neoforge').tasks.jar) {
         rename { "config_manager-neoforge.jar" }
         into 'META-INF/jarjar'
@@ -41,70 +33,51 @@ jar {
         include 'META-INF/neoforge.mods.toml'
         into ''
     }
-    exclude("config_manager.mixins.json")
-    exclude("config_manager.neoforge.mixins.json")
-    exclude("io/github/thebossmagnus/mods/config_manager/neoforge/**")
-    exclude("io/github/thebossmagnus/mods/config_manager/common/**")
-
 }
 
-neoForge {
-    version = neoforge_version
-    runs {
-        configureEach {
-            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
-            ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
-        }
-        client {
-            client()
-        }
-        data {
-            clientData()
-        }
-        server {
-            server()
-        }
-    }
-    mods {
-        "${mod_id}" {
-            sourceSet sourceSets.main
-        }
+def parsedChangelog = rootProject.file('CHANGELOG.md').getText('UTF-8')
+
+if (System.getenv("MODRINTH_TOKEN") != null) {
+    modrinth {
+        group = "upload"
+        token = System.getenv("MODRINTH_TOKEN")
+        projectId = "ehPxCT2J"
+        versionNumber = project.version
+        versionName = tasks.jar.archiveFile.get().asFile.name
+        versionType = release_type
+        changelog = parsedChangelog
+        uploadFile = tasks.jar
+        gameVersions = ["26.1.2", "26.2", "26.3"]
+        loaders = ["neoforge"]
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+if (System.getenv("CURSEFORGE_TOKEN") != null) {
+    tasks.register("publishCurseForge", TaskPublishCurseForge) {
+        group = "upload"
+        apiToken = System.getenv("CURSEFORGE_TOKEN")
 
-unifiedPublishing {
-    project {
-        gameVersions = ["26.1", "26.1.1", "26.1.2", "26.2"]
-        gameLoaders = ["neoforge"]
+        def mainFile = upload("963806", tasks.jar)
+        mainFile.displayName = tasks.jar.archiveFile.get().asFile.name
+        mainFile.changelog = parsedChangelog
+        mainFile.changelogType = "markdown"
+        mainFile.releaseType = release_type
 
-
-        displayName = "Config Manager ${project.version} NeoForge"
-        version = project.version
-        changelog = file('../CHANGELOG.md').text
-        releaseType = release_type
-
-        mainPublication tasks.jar
-
-        var cfToken = System.getenv("CURSEFORGE_TOKEN")
-        if (cfToken != null) {
-            curseforge {
-                token = cfToken
-                id = "1340480"
-            }
-        }
-
-        var mrToken = System.getenv("MODRINTH_TOKEN")
-        if (mrToken != null) {
-            modrinth {
-                token = mrToken
-                id = "jlNms3Jp"
-            }
-        }
+        mainFile.addGameVersion("26.1.2", "26.2", "26.3")
+        mainFile.addEnvironment("Client")
+        mainFile.addModLoader("NeoForge")
     }
 }
 
-tasks.register('publishRelease') {
-    dependsOn 'publishUnified'
+tasks.register('publishUnified') {
+    group = "upload"
+    if (System.getenv("MODRINTH_TOKEN") != null) dependsOn(tasks.modrinth)
+    if (System.getenv("CURSEFORGE_TOKEN") != null) dependsOn(tasks.publishCurseForge)
+}
+
+tasks.register('publishUnifiedToLocal', Copy) {
+    group = "upload"
+    dependsOn(tasks.jar)
+    from(tasks.jar.archiveFile)
+    into("build/unified-local/project0")
 }
