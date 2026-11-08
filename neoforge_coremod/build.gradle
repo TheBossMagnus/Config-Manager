@@ -48,7 +48,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         versionType = release_type
         changelog = parsedChangelog
         uploadFile = tasks.jar
-        gameVersions = ["26.1.2", "26.2", "26.3"]
+        gameVersions = ["26.4"]
         loaders = ["neoforge"]
     }
 }
@@ -64,7 +64,7 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
         mainFile.changelogType = "markdown"
         mainFile.releaseType = release_type
 
-        mainFile.addGameVersion("26.1.2", "26.2", "26.3")
+        mainFile.addGameVersion("26.4")
         mainFile.addEnvironment("Client")
         mainFile.addModLoader("NeoForge")
     }

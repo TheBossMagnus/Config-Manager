@@ -1,2 +1,3 @@
-* Ported to 26.2
-* Added Ukrainian and Tartar translations
+* Redesigned the reset configs UI
+    * It should scale better on different screen sizes
+* Ported to 26.4
