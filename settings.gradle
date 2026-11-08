@@ -13,5 +13,5 @@ rootProject.name = 'ConfigManager'
 
 include 'common'
 include 'fabric'
-include 'neoforge'
-include 'neoforge_coremod'
+//include 'neoforge'
+//include 'neoforge_coremod'

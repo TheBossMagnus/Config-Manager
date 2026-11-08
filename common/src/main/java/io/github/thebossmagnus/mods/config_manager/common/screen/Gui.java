@@ -62,8 +62,8 @@ public class Gui extends Screen {
         ); // take the taller of the two cards to align them
         int buttonY = MARGIN + cardHeight - CARD_PADDING - BUTTON_HEIGHT; //At what height to place the two buttons
 
-        addRenderableOnly(new Card(font, firstBoxStart, MARGIN, cardWidth, cardHeight, UPDATE_COLOR, updateLabel, updateWarningText));
-        addRenderableOnly(new Card(font, secondBoxStart, MARGIN, cardWidth, cardHeight, RESET_COLOR, resetLabel, resetWarningText));
+        addWidget(new Card(font, firstBoxStart, MARGIN, cardWidth, cardHeight, UPDATE_COLOR, updateLabel, updateWarningText));
+        addWidget(new Card(font, secondBoxStart, MARGIN, cardWidth, cardHeight, RESET_COLOR, resetLabel, resetWarningText));
         addRenderableWidget(actionButton(updateLabel, () -> AddFlagsUtil.setUpdateFlag(true),
                 firstBoxStart + CARD_PADDING, buttonY, textWidth));
         addRenderableWidget(actionButton(resetLabel, () -> AddFlagsUtil.setOverwriteFlag(true),
@@ -124,7 +124,7 @@ public class Gui extends Screen {
         }
 
         @Override
-        protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+        protected void extractWidgetRenderState(GuiGraphicsExtractor graphics) {
             graphics.fill(getX(), getY(), getX() + width, getY() + height, CARD_COLOR);
             graphics.fill(getX(), getY(), getX() + width, getY() + 2, accent);
             int x = getX() + CARD_PADDING;
