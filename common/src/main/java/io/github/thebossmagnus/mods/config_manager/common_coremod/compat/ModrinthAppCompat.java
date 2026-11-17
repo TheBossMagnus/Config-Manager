@@ -5,7 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.github.thebossmagnus.mods.config_manager.common.Constants.LOGGER;
 
@@ -13,14 +14,14 @@ import static io.github.thebossmagnus.mods.config_manager.common.Constants.LOGGE
 In the Modrinth app, enabling instance options under window size enable Fullscreen.
 This will cause Modrinth to generate an options.txt file with Fullscreen enabled which doesn't get overridden by Config Manager.
 Fixing this requires a slightly hacky workaround.
-When options.txt contains only the launcher's fullscreen setting,
-we back it up, let the modpack options.txt be copied, then restore the original file.
 */
 public final class ModrinthAppCompat {
     private static boolean isWorkaroundNeeded = false;
+    private static boolean fullscreenEnabled;
 
     public static void backupOptionsFileIfNeeded(@NotNull Path gameDir) throws IOException {
         Path optionsFile = gameDir.resolve("options.txt");
+
 
         if (!Files.exists(optionsFile)) {
             return;
@@ -32,16 +33,18 @@ public final class ModrinthAppCompat {
             return;
         }
 
-        if (!nonBlankLines.getFirst().startsWith("fullscreen:") && !nonBlankLines.getLast().startsWith("fullscreen:")) {
+        if (nonBlankLines.getFirst().startsWith("fullscreen:")) {
+            fullscreenEnabled = Boolean.parseBoolean(nonBlankLines.getFirst().split(":")[1]);
+        } else if (nonBlankLines.getLast().startsWith("fullscreen:")) {
+            fullscreenEnabled = Boolean.parseBoolean(nonBlankLines.getLast().split(":")[1]);
+        } else {
             return;
         }
 
         try {
-            Path backupFile = gameDir.resolve("options.txt.bak");
-            Files.copy(optionsFile, backupFile, StandardCopyOption.REPLACE_EXISTING);
             isWorkaroundNeeded = true;
             Files.delete(optionsFile);
-            LOGGER.info("Detected fullscreen preference imposed by the launcher; backing up options.txt before copying modpack defaults");
+            LOGGER.info("Detected fullscreen preference imposed by the launcher, using workaround to preserve it ({}).", fullscreenEnabled);
         } catch (IOException e) {
             throw new RuntimeException("Could not back up options.txt while checking for a Modrinth fullscreen preference", e);
         }
@@ -51,13 +54,15 @@ public final class ModrinthAppCompat {
         if (!isWorkaroundNeeded) {
             return;
         }
-        Path backupFile = gameDir.resolve("options.txt.bak");
-        if (!Files.exists(backupFile)) {
-            return;
-        }
         try {
-            Files.copy(backupFile, gameDir.resolve("options.txt"), StandardCopyOption.REPLACE_EXISTING);
-            Files.delete(backupFile);
+            Path optionsFile = gameDir.resolve("options.txt");
+            List<String> lines = Files.exists(optionsFile) ? new ArrayList<>(Files.readAllLines(optionsFile).stream().map(String::trim).filter(s -> !s.isEmpty()).toList()) : new ArrayList<>();
+            // Remove any existing fullscreen setting
+            lines.removeIf(line -> line.startsWith("fullscreen:"));
+            lines.add("fullscreen:" + fullscreenEnabled);
+            Files.write(optionsFile, lines);
+
+            LOGGER.info("Restored options.txt with fullscreen preference: {}", fullscreenEnabled);
         } catch (IOException e) {
             throw new RuntimeException("Could not restore the Modrinth launcher options.txt backup", e);
         }
