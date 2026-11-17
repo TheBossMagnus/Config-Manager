@@ -1,2 +1,1 @@
-* Ported to 26.2
-* Added Ukrainian and Tartar translations
+* Fix the workaround for Modrinth app fullscreen setting
