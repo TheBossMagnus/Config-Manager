@@ -44,6 +44,9 @@ allprojects {
 jar.enabled = false
 
 tasks.register('collectJars', Copy) {
+    //dependsOn(':fabric:jar', ':neoforge_coremod:jar')
+    dependsOn(':fabric:jar')
+
     from('fabric/build/libs') {
         include '*.jar'
         exclude '*-sources.jar', '*-javadoc.jar', '*-dev-shadow.jar'

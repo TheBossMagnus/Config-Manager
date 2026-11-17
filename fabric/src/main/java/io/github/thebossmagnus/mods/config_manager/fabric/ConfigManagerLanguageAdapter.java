@@ -9,6 +9,7 @@ import net.fabricmc.loader.api.ModContainer;
 
 public class ConfigManagerLanguageAdapter implements LanguageAdapter {
 
+    @SuppressWarnings("unused")
     public ConfigManagerLanguageAdapter() {
         ConfigManagerStartup.run(FabricLoader.getInstance().getGameDir());
 

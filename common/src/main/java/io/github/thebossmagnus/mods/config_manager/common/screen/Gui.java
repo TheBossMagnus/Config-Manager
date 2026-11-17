@@ -103,6 +103,7 @@ public class Gui extends Screen {
         this.minecraft.gui.setScreen(this.parent);
     }
 
+    @SuppressWarnings("unused")
     private static final class Card extends AbstractWidget {
         private final Font font;
         private final int accent;
