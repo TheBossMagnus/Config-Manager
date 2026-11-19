@@ -1,42 +1,49 @@
 # Modpack Developer Guide
 
-Setup is straightforward:
+Setting up Config Manager in your modpack is straightforward:
 
-1. Add Config Manager to your modpack (from [Modrinth] or [CurseForge]).
-2. Copy all configuration files into a folder called `modpack_defaults` inside `config/`.
-3. The structure inside `modpack_defaults` should mirror the root of the Minecraft directory.
+1. **Add Config Manager** to your modpack. You can find it on [Modrinth](https://modrinth.com/mod/configmanager) or [CurseForge](https://www.curseforge.com/minecraft/mc-mods/configmanager).
+2. **Create a `modpack_defaults` folder** inside your Minecraft `config` directory.
+3. **Copy your default configuration files** into this folder, preserving the structure of the Minecraft directory.
 
-**Example:**
+The `modpack_defaults` folder should mirror the structure of the Minecraft root directory. For example:
 
-```
+```text
 .minecraft/
-├─ options.txt (the "real" one)
-├─ config/
-│ ├─ myMod.json (the modpack one)
-│ ├─ modpack_default/
-│ │ ├─ options.txt (the modpack one)
-│ │ └─ config/
-│ │ └─ myMod.json (the "real" one)
+├── 📄 options.txt                  # User's options
+├── 📁 config/
+│   ├── 📄 myModConfig.json                # User's mod configuration
+│   └── 📁 modpack_defaults/
+│       ├── 📄 options.txt            # Modpack default options
+│       └── 📁 config/
+│           └── 📄 myModConfig.json        # Modpack default mod configuration
 ```
 
-This is an [example implementation](https://github.com/TheBossMagnus/Thunder) (my modpack).
+See this [example implementation](https://github.com/TheBossMagnus/Thunder/tree/main/src) in my modpack, Thunder.
 
 ---
 
 ## FAQ
 
-**Q: Can I forcefully override user preferences for a specific file?**  
-**A:** Yes. Place the file directly in its normal location instead of only inside `modpack_default`.
+**❓ Can I forcibly override user preferences for a specific file?**
 
----
+Technically, yes. Place the file directly in the Minecraft `config` directory, outside `modpack_defaults`. Files placed here take precedence over the modpack defaults.
 
-**Q: Can I force an update or reset of user configs?**  
-**A:** You can do this by placing a file named `CONFIG_MANAGER_UPDATE_FLAG` or `CONFIG_MANAGER_RESET_FLAG` in the
-`config` directory.  
-**Still, this is not recommended.**
+**❓ Can I force an update or reset of user configurations?**
 
----
+Yes. You can trigger these actions by placing one of the following flag files in the `config` directory:
 
-**Q: Can I use this for other content than config files (e.g., .jar files)?**  
-**A:** Technically yes, there are no restrictions.  
-**Not recommended** as this mod is not designed for that, and it may confuse users.
+- `CONFIG_MANAGER_UPDATE_FLAG` — forces a configuration update (syncs user settings with the modpack defaults).
+- `CONFIG_MANAGER_RESET_FLAG` — forces a configuration reset (deletes all user preferences and syncs settings with the modpack defaults).
+
+Players can perform these actions themselves via the mod's settings. If you need either of these actions, the recommended approach is to instruct the player to **trigger them manually**.
+
+>[!CAUTION]
+>**However, this is not recommended**, as it may overwrite user customizations without their approval.
+
+**❓ Can I use Config Manager for content other than configuration files (e.g., `.jar` files)?**
+
+Technically, yes. There are no restrictions on the types of files you can place in `modpack_defaults`.
+
+>[!CAUTION]
+>However, this is **not recommended**. Config Manager is designed to manage configuration files; using it for other types of content can lead to unexpected behavior and may confuse the player.
